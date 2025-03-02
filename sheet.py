@@ -1,57 +1,64 @@
-import dash
-from dash import dcc
-from dash import html
-
+import gspread
 import requests
-from googleapiclient.discovery import build
-from google.cloud import language
+from google.oauth2.service_account import Credentials
+# -------------------------------------------------------------------------------
+YANDEX_API = "23ba9181-ab9f-4c7e-a209-346f4ef7c4a9"
+GEOCODE_URL = "https://geocode-maps.yandex.ru/1.x"
+# -------------------------------------------------------------------------------
+
+#                                       </FUNCTIONS/>
+def geocode(address):
+    params = {
+        'apikey': YANDEX_API,
+        'geocode': address,
+        'format': 'json'
+    }
+
+    response = requests.get(GEOCODE_URL, params=params)
+    if response.status_code == 200:
+        data = response.json()
+
+        try:
+                pos = data["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["Point"]["pos"]
+                longitude, latitude = pos.split(" ")
+                return float(latitude), float(longitude)
+        except (KeyError, IndexError):
+            print("No results found for this address")
+            return None
+
+    else:
+        print(f"Error: {response.status_code}")
+        return None
 
 
+def address_to_coords(addr_mat):
+    return [geocode(k) for k in addr_mat]
 
-YANDEX_API_KEY = "23ba9181-ab9f-4c7e-a209-346f4ef7c4a9"
+#                                   </>
 
-GOOGLE_API_KEY = "AIzaSyCP0qTkrjpSNwfYV9nzyNfxGTj2-LOoizM"
-SPREADSHEET_ID = "1__of0_NMbxIDXlKTkcEbV1stP4p7qEKUIDluGWXDEZc"
+scopes = [
+    "https://www.googleapis.com/auth/spreadsheets",
 
-def sheets_auth(api_key):
-    return build('sheets', 'v4', developerKey=api_key).spreadsheets()
+]
+
+creds = Credentials.from_service_account_file("creds.json", scopes=scopes)
+client = gspread.authorize(creds)
+
+sheet_id = "1__of0_NMbxIDXlKTkcEbV1stP4p7qEKUIDluGWXDEZc"
+workbook = client.open_by_key(sheet_id)
+
+sheets = workbook.worksheets()
+moyka = sheets[0]
 
 
+# Initializing matrix [Name, Address, Type, Phone Number, Web-Site, Telegram]
+matrix = moyka.get_all_values()
 
+# Getting coordinates of all addresses from a sheet
+coords = address_to_coords(k[1] for k in matrix[3:])
 
+# Getting names
+names = [k[0] for k in matrix[3:]]
 
-
-# Initialize the Dash app
-app = dash.Dash(__name__)
-
-# Define the layout of the app
-app.layout = html.Div([
-    dcc.Graph(
-        id='map',
-        figure={
-            'data': [
-                {
-                    'type': 'scattermapbox',  # Type of map
-                    'lat': [37.7749, 34.0522, 40.7128],  # Latitude coordinates
-                    'lon': [-122.4194, -118.2437, -74.0060],  # Longitude coordinates
-                    'mode': 'markers',  # Display markers
-                    'marker': {'size': 10, 'color': 'red'},  # Marker style
-                    'text': ['San Francisco', 'Los Angeles', 'New York'],  # Hover text
-                }
-            ],
-            'layout': {
-                'mapbox': {
-                    'style': 'open-street-map',  # Map style (can also use Mapbox styles)
-                    'center': {'lat': 37.7749, 'lon': -122.4194},  # Center of the map
-                    'zoom': 2,  # Zoom level
-                },
-                'title': 'US Cities Map',  # Title of the map
-                'margin': {'l': 0, 'r': 0, 't': 40, 'b': 0},  # Margins
-            }
-        }
-    )
-])
-
-# Run the app
-if __name__ == '__main__':
-    app.run_server(debug=True)
+# Resulting matrix with names and coordinates of every car wash
+names_coords = [[names[i], coords[i]] for i in range(len(coords))]
