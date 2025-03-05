@@ -8,4 +8,4 @@ build:
 run:
   scriptName: map.py
   persistenceMount: /data
-  containerPort: 80
+  containerPort: 5000
