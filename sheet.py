@@ -66,4 +66,4 @@ names_coords = [[names[i], coords[i]] for i in range(len(coords))]
 # Saving info to coord.txt file
 with open("coord.txt", "w") as txt_file:
     for el in names_coords:
-        txt_file.write(" ".join([el[0], str(el[1][0]), str(el[1][1])]) + "\n")
+        txt_file.write(" ".join([f"{el[0]} ;", str(el[1][0]) + ";", str(el[1][1])]) + "\n")
