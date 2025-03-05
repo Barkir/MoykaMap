@@ -31,5 +31,5 @@ app.layout = html.Div([dl.Map(center=[55.751244, 37.618423],
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8080)
+    app.run_server(debug=True, port=5000, host='0.0.0.0')
 
