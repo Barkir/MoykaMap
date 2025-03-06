@@ -12,7 +12,7 @@ dp = Dispatcher()
 @dp.message(Command(commands=['start']))
 async def start(message: Message):
 
-    markup = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='Open App', web_app=WebAppInfo(url='https://blindj1.github.io/Moyka-Map/'))]],
+    markup = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='Open App', web_app=WebAppInfo(url="https://moykamap-barkir.amvera.io/"))]],
                                  resize_keyboard=True
                                  )
 
