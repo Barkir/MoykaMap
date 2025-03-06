@@ -5,3 +5,4 @@ Werkzeug==2.2.2
 dash
 pandas
 dash_leaflet
+dash-extensions
