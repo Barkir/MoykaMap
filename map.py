@@ -4,8 +4,6 @@ import dash_leaflet as dl
 import pandas as pd
 import os
 
-os.system("python sheet.py")
-
 file2arr = [k.rstrip().split(';') for k in open("coord.txt").readlines()]
 boobs = dict(
     iconUrl='./assets/car-wash.png',
