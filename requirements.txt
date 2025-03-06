@@ -6,3 +6,6 @@ dash
 pandas
 dash_leaflet
 dash-extensions
+gspread
+requests
+google.oauth2.service_account
