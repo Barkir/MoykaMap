@@ -9,3 +9,4 @@ dash-extensions
 gspread
 requests
 google
+aiogram

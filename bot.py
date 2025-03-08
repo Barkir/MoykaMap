@@ -1,5 +1,5 @@
 from aiogram import Bot, Dispatcher
-from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.filters import Command
 from aiogram.types.web_app_info import WebAppInfo
 
@@ -10,13 +10,18 @@ dp = Dispatcher()
 
 
 @dp.message(Command(commands=['start']))
-async def start(message: Message):
+async def send_welcome(message: Message):
+    photo_url = "https://png.pngtree.com/png-vector/20230107/ourmid/pngtree-new-original-transparent-car-png-image_6554552.png"  # Пример URL изображения
+    app_btn = InlineKeyboardButton(text="Open app", web_app=WebAppInfo(url="https://moykamap-barkir.amvera.io/"))
+    support_btn = InlineKeyboardButton(text="Техподдержка", callback_data="support_btn")
+    inline_kbd = InlineKeyboardMarkup(inline_keyboard=[[support_btn], [app_btn]])
 
-    markup = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='Open App', web_app=WebAppInfo(url="https://moykamap-barkir.amvera.io/"))]],
-                                 resize_keyboard=True
-                                 )
-
-    await message.answer(text="Hey", reply_markup=markup)
+    await message.answer_photo(photo=photo_url,
+                               reply_markup=inline_kbd,
+                               caption="Привет! Этот бот поможет тебе найти "
+                                       "близжайшую свободную автомойку, которая подойдет "
+                                       "именно для тебя"
+                               )
 
 
 if __name__ == '__main__':
