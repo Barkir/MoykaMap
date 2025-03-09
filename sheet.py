@@ -60,10 +60,21 @@ coords = address_to_coords(k[1] for k in matrix[3:])
 # Getting names
 names = [k[0] for k in matrix[3:]]
 
+# Getting type
+types = [k[2] for k in matrix[3:]]
+
+# Getting numbers
+numbers = [k[3] for k in matrix[3:]]
+
+# Getting URL's
+
+url = [k[4] for k in matrix[3:]]
+
+
 # Resulting matrix with names and coordinates of every car wash
-names_coords = [[names[i], coords[i]] for i in range(len(coords))]
+result = [[names[i], coords[i], types[i], numbers[i], url[i]] for i in range(len(coords))]
 
 # Saving info to coord.txt file
 with open("coord.txt", "w") as txt_file:
-    for el in names_coords:
-        txt_file.write(" ".join([f"{el[0]} ;", str(el[1][0]) + ";", str(el[1][1])]) + "\n")
+    for el in result:
+        txt_file.write(f"{el[0]};{el[1][0]};{el[1][1]};{el[2]};{el[3]};{el[4]}\n")
