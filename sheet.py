@@ -70,11 +70,15 @@ numbers = [k[3] for k in matrix[3:]]
 
 url = [k[4] for k in matrix[3:]]
 
+# Getting average cheque
+
+cheque = [k[5] for k in matrix[3:]]
+
 
 # Resulting matrix with names and coordinates of every car wash
-result = [[names[i], coords[i], types[i], numbers[i], url[i]] for i in range(len(coords))]
+result = [[names[i], coords[i], types[i], numbers[i], url[i], cheque[i]] for i in range(len(coords))]
 
 # Saving info to coord.txt file
 with open("coord.txt", "w") as txt_file:
     for el in result:
-        txt_file.write(f"{el[0]};{el[1][0]};{el[1][1]};{el[2]};{el[3]};{el[4]}\n")
+        txt_file.write(f"{el[0]};{el[1][0]};{el[1][1]};{el[2]};{el[3]};{el[4]};{el[5]}\n")

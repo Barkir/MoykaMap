@@ -19,7 +19,8 @@ data = {
     'lon': [k[2] for k in file2arr],
     'type': [k[3] for k in file2arr],
     'tel': [k[4] for k in file2arr],
-    'url': [k[5] for k in file2arr]
+    'url': [k[5] for k in file2arr],
+    'cheque': [k[6] for k in file2arr]
 }
 
 df = pd.DataFrame(data)
@@ -35,7 +36,8 @@ markers = [dl.Marker(
                          dl.Popup(
                              [html.Div(
                                  [html.H4(row['tel'], style={'color': '#2c3e50', 'margin': '0'}),
-                            html.P(row['type'], style={'color': '#7f8c8d', 'margin': '5px 0'}),]
+                            html.P(row['type'], style={'color': '#7f8c8d', 'margin': '5px 0'}),
+                                  html.P(row['cheque'], style={'color': '#2c3e50', 'margin': '0'})]
                              )]
                          )
                      ]) for index, row in df.iterrows()]
