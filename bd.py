@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS users (
     username TEXT,
     first_name TEXT,
     last_name TEXT,
-    is_subscribed INTEGER DEFAULT 0
+    is_subscribed INTEGER DEFAULT 0,
+    link TEXT DEFAULT "https://appstorrent.ru/tags/ableton/"
 )
 ''')
 

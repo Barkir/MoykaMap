@@ -59,22 +59,26 @@ async def gift_cmd(callback: CallbackQuery):
     # Изменение статуса подписки
     conn = sqlite3.connect('bot_users.db')
     cursor = conn.cursor()
-    cursor.execute('''
-    UPDATE users SET is_subscribed = ? WHERE user_id = ?
-    ''', (int(1), callback.from_user.id))
+
+    cursor.execute('''UPDATE users SET is_subscribed = ? WHERE user_id = ?''', (int(1), callback.from_user.id))
+    cursor.execute('''UPDATE users SET link = ? WHERE user_id = ?''', ("https://moykamap-barkir.amvera.io/", callback.from_user.id))
     conn.commit()
+
+    cursor.execute('SELECT link FROM users WHERE user_id = ?', (callback.from_user.id,))
+    link = cursor.fetchone()
     conn.close()
 
-    app_btn = InlineKeyboardButton(text="Открыть приложение", web_app=WebAppInfo(url="https://moykamap-barkir.amvera.io/"))
+
+    app_btn = InlineKeyboardButton(text="Открыть приложение", web_app=WebAppInfo(url=link[0]))
     support_btn = InlineKeyboardButton(text="Техподдержка", callback_data="support_btn")
     kbd = InlineKeyboardMarkup(inline_keyboard=[[support_btn], [app_btn]])
+
 
     await callback.message.answer_photo(
         caption="Поздравляем, вы получили месяц бесплатной подписки",
         reply_markup=kbd,
         photo=photo_url
-        )
-    
+        )    
 
 
 if __name__ == '__main__':
