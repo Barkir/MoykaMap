@@ -101,7 +101,7 @@ async def gift_cmd(callback: CallbackQuery):
 
 
 @dp.callback_query(F.data == "support_btn")
-async def gift_cmd(callback: CallbackQuery):
+async def support_cmd(callback: CallbackQuery):
     global photo_url, last_message_id
 
     await bot.delete_message(chat_id=callback.message.chat.id, message_id=last_message_id)
