@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime
 
 # Подключаемся к базе данных (или создаем её, если она не существует)
 conn = sqlite3.connect('bot_users.db')

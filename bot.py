@@ -2,6 +2,7 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from aiogram.filters import Command
 from aiogram.types.web_app_info import WebAppInfo
+from datetime import *
 import sqlite3
 
 BOT_TOKEN = '8108748639:AAEb2q4qPj55WlGh8IUByiQJ3aTdZQ8098Q'
@@ -78,16 +79,18 @@ async def gift_cmd(callback: CallbackQuery):
     conn = sqlite3.connect('bot_users.db')
     cursor = conn.cursor()
 
-    cursor.execute('''UPDATE users SET is_subscribed = ? WHERE user_id = ?''', (int(1), callback.from_user.id))
-    cursor.execute('''UPDATE users SET link = ? WHERE user_id = ?''', ("https://moykamap-barkir.amvera.io/", callback.from_user.id))
+    #cursor.execute('''UPDATE users SET is_subscribed = ? WHERE user_id = ?''', (int(1), callback.from_user.id))
+    #cursor.execute('''UPDATE users SET link = ? WHERE user_id = ?''', ("https://moykamap-barkir.amvera.io/", callback.from_user.id))
     conn.commit()
 
     cursor.execute('SELECT link FROM users WHERE user_id = ?', (callback.from_user.id,))
     link = cursor.fetchone()
     conn.close()
 
-
-    app_btn = InlineKeyboardButton(text="Открыть приложение", web_app=WebAppInfo(url=link[0]), callback_data="web_app_btn")
+    if link[0] == "https://moykamap-barkir.amvera.io/":
+        app_btn = InlineKeyboardButton(text="Открыть приложение", web_app=WebAppInfo(url=link[0]))
+    else:
+        app_btn = InlineKeyboardButton(text="Открыть приложение", callback_data="web_app_btn")
     support_btn = InlineKeyboardButton(text="Техподдержка", callback_data="support_btn")
     kbd = InlineKeyboardMarkup(inline_keyboard=[[support_btn], [app_btn]])
 
@@ -113,6 +116,26 @@ async def support_cmd(callback: CallbackQuery):
     )
     last_message_id = msg.message_id 
 
+
+# Вызывается если при нажатии на приложение, в случае если подписки нет
+@dp.callback_query(F.data == "web_app_btn")
+async def web_app_cancel_btn(callback: CallbackQuery):
+    global photo_url, last_message_id
+
+    await bot.delete_message(chat_id=callback.message.chat.id, message_id=last_message_id)
+    await callback.answer()
+
+    month_1_btn = InlineKeyboardButton(text="1 месяц    99 рублей", callback_data="month_1_btn")
+    month_6_btn = InlineKeyboardButton(text="6 месяцев  499 рублей", callback_data="month_6_btn")
+    month_12_btn = InlineKeyboardButton(text="1 год     899 рублей", callback_data="month_12_btn")
+    kbd = InlineKeyboardMarkup(inline_keyboard=[[month_1_btn], [month_6_btn], [month_12_btn]])
+
+    msg = await callback.message.answer_photo(
+        caption="😢 Извините, ваша подписка закончилась\n\nВы можете ее продлить ",
+        photo=photo_url,
+        reply_markup=kbd
+    )
+    last_message_id = msg.message_id
 
 
 if __name__ == '__main__':
