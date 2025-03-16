@@ -13,7 +13,10 @@ CREATE TABLE IF NOT EXISTS users (
     first_name TEXT,
     last_name TEXT,
     is_subscribed INTEGER DEFAULT 0,
-    link TEXT DEFAULT "https://appstorrent.ru/tags/ableton/"
+    link TEXT DEFAULT "https://appstorrent.ru/tags/ableton/",
+    end_date TEXT,
+    gift INTEGER DEFAULT 0,
+    last_message_id INTEGER DEFAULT 0
 )
 ''')
 
